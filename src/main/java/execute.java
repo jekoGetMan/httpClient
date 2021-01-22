@@ -2,7 +2,14 @@ import java.io.IOException;
 
 public class execute {
     public static void main(String[] args) throws IOException {
-        httpClient client = new httpClient();
-        System.out.println(client.invokeHttpGet("http://jsonplaceholder.typicode.com/posts"));
+        httpClientUtility client = new httpClientUtility();
+        System.out.println(client.invokeHttpGet("/api/users?page=2", client.getDefaultClient()));
+
+//        String jsonBody = "{\n" +
+//                "    \"name\": \"morpheus\",\n" +
+//                "    \"job\": \"leader\"\n" +
+//                "}";
+//
+//        System.out.println(client.invokeHttpPost("/api/users", jsonBody, client.getDefaultClient()));
     }
 }
