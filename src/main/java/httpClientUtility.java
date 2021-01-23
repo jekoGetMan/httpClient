@@ -1,4 +1,3 @@
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -6,35 +5,33 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public final class httpClientUtility {
-    private static String baseURI = "http://reqres.in";
-//    private static HttpClient httpClient = HttpClientBuilder.create().build();
-//    private static final CloseableHttpClient client = HttpClients.createDefault();
-//    CloseableHttpResponse response = client.execute(new HttpGet("https://4pda.ru/"));
+    public static final String baseURI = "https://reqres.in/";
+    private static HttpResponse response;
 
-    public static String invokeHttpGet(String endpoint, CloseableHttpClient httpClient) throws IOException {
+    public static void invokeHttpGet(String endpoint, CloseableHttpClient httpClient) throws IOException {
         HttpGet httpGet = new HttpGet(baseURI + endpoint);
-        return consumeResponse(httpClient.execute(httpGet));
+        HttpResponse httpResponse = httpClient.execute(httpGet);
+        if (httpResponse != null) {
+            response = httpResponse;
+        }
     }
 
-    public static String invokeHttpPost(String endpoint, String jsonData, CloseableHttpClient httpClient) throws IOException {
+    public static void invokeHttpPost(String endpoint, String jsonBody, CloseableHttpClient httpClient) throws IOException {
         HttpPost httpPost = new HttpPost(baseURI + endpoint);
-        StringEntity entity = new StringEntity(jsonData);
-        httpPost.setEntity(entity);
-        return consumeResponse(httpClient.execute(httpPost));
+        httpPost.setHeader("content-type", "application/json");
+        StringEntity stringEntity = new StringEntity(jsonBody);
+        httpPost.setEntity(stringEntity);
+        HttpResponse httpResponse = httpClient.execute(httpPost);
+        if (httpResponse != null) {
+            response = httpResponse;
+        }
     }
 
-    public static String consumeResponse(HttpResponse response) throws IOException {
-            int status = response.getStatusLine().getStatusCode();
-            System.out.println(status);
-            HttpEntity entity = response.getEntity();
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        entity.writeTo(os);
-        String content = os.toString("UTF-8");
-        return content;
+    public static HttpResponse getResponse() {
+        return response;
     }
 
     public static CloseableHttpClient getDefaultClient() {
