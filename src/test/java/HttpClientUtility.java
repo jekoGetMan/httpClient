@@ -13,27 +13,27 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public final class HttpClientUtility {
-    public static final String baseURI = "https://reqres.in/";
-    private static CloseableHttpClient client = HttpClients.createDefault();
+    public static final String BASE_URI = "https://reqres.in/";
+    private static CloseableHttpClient CLIENT = HttpClients.createDefault();
 
     private HttpClientUtility() {
     }
 
     public static String sendGet(String endpoint) throws IOException, URISyntaxException {
-        URI uri = new URIBuilder(baseURI + endpoint).setParameter("page", "2").build();
+        URI uri = new URIBuilder(BASE_URI + endpoint).setParameter("page", "2").build();
         HttpGet httpGet = new HttpGet(uri);
 
-        return getResponse(client.execute(httpGet));
+        return getResponse(CLIENT.execute(httpGet));
     }
 
     public static String sendPost(String endpoint, String jsonBody) throws IOException, URISyntaxException {
-        URI uri = new URIBuilder(baseURI + endpoint).build();
+        URI uri = new URIBuilder(BASE_URI + endpoint).build();
         HttpPost httpPost = new HttpPost(uri);
         httpPost.setHeader("content-type", "application/json");
         StringEntity stringEntity = new StringEntity(jsonBody);
         httpPost.setEntity(stringEntity);
 
-        return getResponse(client.execute(httpPost));
+        return getResponse(CLIENT.execute(httpPost));
     }
 
     public static String getResponse(HttpResponse response) throws IOException {
@@ -41,6 +41,7 @@ public final class HttpClientUtility {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         entity.writeTo(os);
         String content = os.toString();
+        os.close();
         return content;
     }
 }
